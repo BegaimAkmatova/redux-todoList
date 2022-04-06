@@ -1,19 +1,17 @@
+import { createStore } from "redux";
 
-import { createStore } from 'redux';
-
-const initTodo = {
-    todoList: [],
-    completed: false
+const init = {
+    todoList: []
 }
 
-const reducerTodo = (state=initTodo, action) => {
+const todoReducer = (state = init,action) => {
     if(action.type === 'TODO') {
         return {
             ...state,
             todoList: [...state.todoList, {
-                name:action.inputValue,
+                ...state,
                 id:Math.random().toString(),
-                completed:false
+                name: action.input
             }]
         }
     }
@@ -21,24 +19,28 @@ const reducerTodo = (state=initTodo, action) => {
     if(action.type === 'DELETE') {
         return {
             ...state,
-            todoList: state.todoList.filter(todo => todo.id !== action.id)
+            todoList: state.todoList.filter(item => item.id !== action.id)
         }
     }
 
     if(action.type === 'COMPLETED') {
         return {
             ...state,
-            todoList: state.todoList.map(todo => {
-                if(todo.id === action.id) {
-                    return {...todo, completed: !todo.completed}
+            todoList: state.todoList.map(item => {
+                if(item.id === action.id) {
+                    return {
+                        ...item,
+                        completed: !item.completed
+                    }
                 }
-                return todo
+                return item;
             })
         }
     }
-    return state
+
+    return state;
 }
 
-const store = createStore(reducerTodo);
+const store = createStore(todoReducer)
 
 export default store;
